@@ -5,17 +5,24 @@ import Img from "gatsby-image"
 import { motion, AnimatePresence } from "framer-motion"
 
 const WelcomeAnimation = () => {
-  const [dimensions, setDimensions] = useState({
-    height: window.innerHeight,
-    width: window.innerWidth,
-  })
+  const [dimensions, setDimensions] = useState({})
 
   const [isLogoVisible, setLogoVisible] = useState(false)
   const [isArtistTitleVisible, setArtistTitleVisible] = useState(false)
   const [isSubTitleVisible, setSubTitleVisible] = useState(false)
 
   useEffect(() => {
-    console.log(dimensions)
+    function handleResize() {
+      setDimensions({ height: window.innerHeight, width: window.innerWidth })
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
+
+  useEffect(() => {
     setTimeout(() => {
       setLogoVisible(true)
       setTimeout(() => {
@@ -175,7 +182,7 @@ const Logo = ({ visible }) => {
       placeholderImage: file(relativePath: { eq: "gatsby-icon.png" }) {
         childImageSharp {
           fixed(width: 100, height: 100, grayscale: true) {
-            ...GatsbyImageSharpFixed_tracedSVG
+            ...GatsbyImageSharpFixed
           }
         }
       }
